@@ -1,0 +1,25 @@
+---
+/**
+ * Badge — small pill for eyebrows, tags and "Most popular" labels.
+ * `tone` picks the brand accent; sky-blue is the default "personality" color.
+ */
+interface Props {
+  tone?: 'secondary' | 'accent' | 'ink';
+  class?: string;
+}
+
+const { tone = 'secondary', class: className = '' } = Astro.props;
+
+const tones = {
+  secondary:
+    'bg-[color-mix(in_srgb,var(--color-secondary)_18%,white)] text-[color-mix(in_srgb,var(--color-secondary)_65%,var(--color-ink))] ring-1 ring-[color-mix(in_srgb,var(--color-secondary)_35%,transparent)]',
+  accent: 'bg-accent text-white',
+  ink: 'bg-ink text-white',
+};
+---
+
+<span
+  class={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wider ${tones[tone]} ${className}`}
+>
+  <slot />
+</span>

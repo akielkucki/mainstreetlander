@@ -1,0 +1,65 @@
+---
+/**
+ * FinalCta — bold full-width tomato section + the lead form. This is the
+ * `#get-started` anchor every "Get Started" CTA points to. The form is the
+ * only hydrated island here (client:visible — below the fold).
+ */
+import LeadForm from '../islands/LeadForm.tsx';
+import { site } from '../../lib/content';
+
+const reassurance = [
+  'Live in a day — no months-long project',
+  'No upfront risk — approve before you commit',
+  'Month-to-month — cancel anytime',
+  'You own your domain and content',
+];
+---
+
+<section id="get-started" class="relative overflow-hidden bg-accent py-20 text-white md:py-28">
+  <!-- Abstract darker shapes for depth (decorative). -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="absolute -left-16 top-10 h-72 w-72 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="absolute -right-10 bottom-0 h-80 w-80 rounded-[42%_58%_60%_40%] bg-accent-deep/50 blur-2xl"></div>
+  </div>
+
+  <div class="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2">
+    <!-- Pitch -->
+    <div>
+      <span class="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white ring-1 ring-white/30">
+        Get started
+      </span>
+      <h2 class="mt-6 text-4xl text-white sm:text-5xl">
+        Let’s get your business online.
+      </h2>
+      <p class="mt-5 max-w-md text-lg text-white/90">
+        Tell us a little about your business and we’ll send back a plan — and
+        often a first look at your site — within one business day.
+      </p>
+
+      <ul class="mt-8 flex flex-col gap-3">
+        {reassurance.map((item) => (
+          <li class="flex items-center gap-3 text-white/95">
+            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <p class="mt-8 text-sm text-white/80">
+        Prefer to talk? Call
+        <a href={`tel:${site.phone.replace(/[^+\d]/g, '')}`} class="font-medium text-white underline-offset-4 hover:underline">{site.phone}</a>
+        or email
+        <a href={`mailto:${site.email}`} class="font-medium text-white underline-offset-4 hover:underline">{site.email}</a>.
+      </p>
+    </div>
+
+    <!-- Lead form island -->
+    <div class="text-ink">
+      <LeadForm client:visible />
+    </div>
+  </div>
+</section>

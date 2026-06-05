@@ -1,0 +1,125 @@
+---
+/**
+ * BaseLayout — document shell: head/SEO, fonts, JSON-LD, nav + footer.
+ * Pages render their sections into the <slot>.
+ */
+import '../styles/global.css';
+import Nav from '../components/sections/Nav.astro';
+import Footer from '../components/sections/Footer.astro';
+import { site } from '../lib/content';
+import { professionalServiceSchema } from '../lib/schema';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** OG/Twitter share image (absolute or root-relative). */
+  image?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = `${site.name} — Websites for Main-Street Businesses in Bucks County`,
+  description = site.description,
+  image = '/og.svg', // TODO: provide a 1200×630 og.png for best social previews
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const orgSchema = JSON.stringify(professionalServiceSchema());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Add `js` before paint so scroll-reveal's hidden state only applies
+         when JS can reveal it (no-JS users see content immediately). -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <meta name="theme-color" content="#F55D3E" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Fonts: Clash Display (Fontshare) for headings, Space Grotesk (Google)
+         for body. display=swap avoids invisible text while loading. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Organization / ProfessionalService structured data -->
+    <script type="application/ld+json" set:html={orgSchema} is:inline />
+  </head>
+
+  <body class="bg-bg text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+
+    <Nav />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Shared scroll-reveal: one IntersectionObserver toggles `.is-visible`
+         on every [data-reveal], far cheaper than per-section hydration. -->
+    <script>
+      const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if ('IntersectionObserver' in window && els.length) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.12 }
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>

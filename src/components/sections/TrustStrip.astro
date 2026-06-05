@@ -1,0 +1,44 @@
+---
+/**
+ * TrustStrip — credibility line + scrolling placeholder logos.
+ * Pure-CSS marquee (see .animate-marquee in global.css); no JS.
+ * TODO: swap placeholder names for real client logos / proof.
+ */
+const proof = [
+  'Doylestown Dental',
+  'Ridge Line Roofing',
+  'Maple & Main Café',
+  'Bucks County Bikes',
+  'Stover & Sons HVAC',
+  'Lakeview Landscaping',
+];
+---
+
+<section class="border-y border-border bg-bg-soft py-10" aria-label="Trusted by local businesses">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8">
+    <p class="text-center text-sm font-medium uppercase tracking-wider text-muted">
+      Trusted by main-street businesses across Bucks County
+    </p>
+  </div>
+
+  <!-- Edge-faded marquee track -->
+  <div
+    class="relative mt-6 flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+  >
+    <div class="flex shrink-0 animate-marquee items-center gap-12 pr-12">
+      {[...proof, ...proof].map((name) => (
+        <span class="whitespace-nowrap font-display text-xl font-semibold text-ink/35">
+          {name}
+        </span>
+      ))}
+    </div>
+    <!-- Duplicate track for a seamless loop. -->
+    <div class="flex shrink-0 animate-marquee items-center gap-12 pr-12" aria-hidden="true">
+      {[...proof, ...proof].map((name) => (
+        <span class="whitespace-nowrap font-display text-xl font-semibold text-ink/35">
+          {name}
+        </span>
+      ))}
+    </div>
+  </div>
+</section>

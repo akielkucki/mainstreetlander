@@ -1,0 +1,37 @@
+---
+/**
+ * SectionHeading — consistent eyebrow + H2 + lead paragraph for every section.
+ * Keeps hierarchy and spacing uniform so sections read as one system.
+ */
+import Badge from './Badge.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** Word(s) within `title` to highlight in tomato. Optional. */
+  highlight?: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { eyebrow, title, highlight, align = 'left', class: className = '' } = Astro.props;
+
+// Split the title so a chosen phrase can be wrapped in the highlight span.
+const parts = highlight && title.includes(highlight)
+  ? title.split(highlight)
+  : null;
+
+const alignment = align === 'center' ? 'text-center items-center mx-auto' : 'text-left items-start';
+---
+
+<div class={`flex flex-col gap-4 ${alignment} ${className}`} data-reveal>
+  {eyebrow && <Badge>{eyebrow}</Badge>}
+  <h2 class="text-3xl sm:text-4xl md:text-5xl max-w-3xl">
+    {parts ? (
+      <>{parts[0]}<span class="text-accent">{highlight}</span>{parts[1]}</>
+    ) : (
+      title
+    )}
+  </h2>
+  <slot />
+</div>

@@ -1,0 +1,47 @@
+---
+/**
+ * HowItWorks — three low-risk steps. Big tomato numerals, a connecting line on
+ * desktop, and a staggered scroll reveal (CSS, via data-reveal).
+ */
+import SectionHeading from '../ui/SectionHeading.astro';
+import { steps } from '../../lib/content';
+---
+
+<section id="how-it-works" class="bg-bg py-20 md:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8">
+    <SectionHeading
+      eyebrow="How it works"
+      title="Online in three easy steps"
+      highlight="three easy steps"
+    >
+      <p class="max-w-xl text-lg text-muted">
+        No drawn-out projects, no big upfront risk. You only commit once you’ve
+        seen your finished site live.
+      </p>
+    </SectionHeading>
+
+    <ol class="relative mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+      <!-- Connecting line behind the numerals (desktop). -->
+      <div
+        class="absolute left-0 right-0 top-7 hidden h-px bg-border md:block"
+        aria-hidden="true"
+      ></div>
+
+      {steps.map((step, i) => (
+        <li
+          class="relative flex flex-col gap-4"
+          data-reveal
+          style={`--reveal-delay:${i * 110}ms`}
+        >
+          <span
+            class="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent font-display text-2xl font-semibold text-white shadow-[0_10px_24px_-10px_color-mix(in_srgb,var(--color-accent)_70%,transparent)]"
+          >
+            {i + 1}
+          </span>
+          <h3 class="text-xl">{step.title}</h3>
+          <p class="text-muted">{step.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,54 @@
+---
+/**
+ * Faq — objection handling. Native <details>/<summary> accordion: fully
+ * accessible and keyboard-operable with zero JS. Emits FAQPage JSON-LD so the
+ * Q&As can earn rich results.
+ */
+import SectionHeading from '../ui/SectionHeading.astro';
+import { faqs, CONTACT_ANCHOR } from '../../lib/content';
+import { faqSchema } from '../../lib/schema';
+
+const jsonLd = JSON.stringify(faqSchema(faqs));
+---
+
+<section id="faq" class="bg-bg py-20 md:py-28">
+  <div class="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <SectionHeading eyebrow="FAQ" title="Questions, answered" highlight="answered">
+        <p class="max-w-md text-lg text-muted">
+          The honest answers local owners ask us most. Still unsure?
+          <a href={CONTACT_ANCHOR} class="font-medium text-accent underline-offset-4 hover:underline">
+            Get in touch
+          </a> — no pressure.
+        </p>
+      </SectionHeading>
+    </div>
+
+    <div class="flex flex-col gap-3 lg:col-span-7" data-reveal>
+      {faqs.map((faq) => (
+        <details class="faq group rounded-2xl border border-border bg-bg px-5 open:bg-bg-soft">
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-display text-lg font-medium"
+          >
+            {faq.q}
+            <span class="chevron inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-ink transition-transform duration-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </summary>
+          <p class="pb-5 pr-8 text-muted">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Rich-result structured data for the FAQ. -->
+<script type="application/ld+json" set:html={jsonLd} is:inline />
+
+<style>
+  /* Native disclosure: hide default marker, rotate chevron when open. */
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq[open] .chevron { transform: rotate(180deg); }
+</style>

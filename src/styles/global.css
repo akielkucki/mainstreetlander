@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   DESIGN TOKENS — single source of truth for the MainStreetLander brand.
+   Tailwind v4 reads these `@theme` variables and generates matching utility
+   classes (e.g. `--color-accent` -> `bg-accent` / `text-accent`,
+   `--font-display` -> `font-display`). Never hardcode hex values in components.
+   ========================================================================== */
+@theme {
+    /* Color */
+    --color-bg: #FFFFFF;          /* primary canvas                          */
+    --color-bg-soft: #F9F8F5;     /* alternating section background (cream)  */
+    --color-ink: #0F172A;         /* primary text — near-black, cool slate   */
+    --color-muted: #878E88;       /* muted text, captions                    */
+    --color-accent: #F55D3E;      /* TOMATO — primary action / highlights    */
+    --color-accent-deep: #D8452A; /* tomato pressed/hover (derived)          */
+    --color-secondary: #76BED0;   /* SKY BLUE — badges, accents, shapes      */
+    --color-border: #E8E5DF;      /* subtle warm border                      */
+
+    /* Type */
+    --font-display: "Clash Display", "Space Grotesk", system-ui, sans-serif;
+    --font-body: "Space Grotesk", system-ui, sans-serif;
+
+    /* Motion */
+    --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* =============================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        /* Offset anchor jumps so headings clear the sticky nav. */
+        scroll-padding-top: 6rem;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        background-color: var(--color-bg);
+        color: var(--color-ink);
+        font-family: var(--font-body);
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+        text-wrap: balance;
+    }
+
+    /* Consistent, brand-tinted focus ring for keyboard users. */
+    :focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    ::selection {
+        background-color: var(--color-accent);
+        color: #fff;
+    }
+}
+
+/* =============================================================================
+   SCROLL REVEAL
+   Content is real, visible HTML by default (good for SEO + no-JS). The hidden
+   pre-animation state is only applied when JS is available (`html.js`, set by
+   an inline script in <head>) AND the user hasn't asked to reduce motion.
+   A tiny shared IntersectionObserver toggles `.is-visible` — far cheaper than
+   hydrating every static section as its own Framer Motion island.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+    html.js [data-reveal]:not(.is-visible) {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    html.js [data-reveal] {
+        transition:
+            opacity 0.7s var(--ease-out-soft),
+            transform 0.7s var(--ease-out-soft);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
+    }
+}
+
+/* =============================================================================
+   UTILITIES
+   ========================================================================== */
+@layer utilities {
+    /* Tomato underline-highlight for a key word in a headline. */
+    .text-highlight {
+        background-image: linear-gradient(transparent 62%, color-mix(in srgb, var(--color-accent) 32%, transparent) 0);
+        background-repeat: no-repeat;
+    }
+
+    /* Soft grain-free radial glow used behind abstract shapes. */
+    .bg-glow-accent {
+        background: radial-gradient(circle at center, color-mix(in srgb, var(--color-accent) 22%, transparent) 0%, transparent 70%);
+    }
+    .bg-glow-secondary {
+        background: radial-gradient(circle at center, color-mix(in srgb, var(--color-secondary) 28%, transparent) 0%, transparent 70%);
+    }
+
+    /* Edge-to-edge marquee used by the trust strip (no JS). */
+    @keyframes marquee {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+        animation: marquee 32s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .animate-marquee { animation: none; }
+    }
+}

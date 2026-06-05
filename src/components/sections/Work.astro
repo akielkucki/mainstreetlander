@@ -1,0 +1,68 @@
+---
+/**
+ * Work — portfolio grid. Placeholder cards use abstract brand-color gradients
+ * instead of imagery; real client screenshots slot straight into this shape
+ * (add an `image` to WorkItem and swap the gradient div for <Image>).
+ * TODO: replace placeholder projects with real client work.
+ */
+import SectionHeading from '../ui/SectionHeading.astro';
+import { workItems } from '../../lib/content';
+
+// Map swatch token names to CSS custom properties.
+const tokenVar: Record<string, string> = {
+  accent: 'var(--color-accent)',
+  secondary: 'var(--color-secondary)',
+  ink: 'var(--color-ink)',
+};
+---
+
+<section id="work" class="bg-bg-soft py-20 md:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8">
+    <SectionHeading eyebrow="Our work" title="Local businesses, leveled up" highlight="leveled up">
+      <p class="max-w-2xl text-lg text-muted">
+        A few of the main-street businesses we’ve put on the map — built to look
+        great and to bring in real bookings, calls and quotes.
+      </p>
+    </SectionHeading>
+
+    <div class="mt-14 grid gap-6 sm:grid-cols-2">
+      {workItems.map((item, i) => (
+        <a
+          href={item.href ?? '#work'}
+          data-reveal
+          style={`--reveal-delay:${(i % 2) * 100}ms`}
+          class="group block overflow-hidden rounded-3xl border border-border bg-bg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-24px_rgba(15,23,42,0.3)]"
+        >
+          <!-- Abstract gradient "screenshot" placeholder. -->
+          <div
+            class="relative aspect-[16/10] overflow-hidden"
+            style={`background:linear-gradient(135deg, ${tokenVar[item.swatch[0]]}, ${tokenVar[item.swatch[1]]})`}
+          >
+            <div class="absolute inset-0 bg-glow-secondary opacity-40 mix-blend-overlay"></div>
+            <!-- Mini browser bar to read as a website. -->
+            <div class="absolute left-4 top-4 flex gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-white/70"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-white/50"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-white/40"></span>
+            </div>
+            <span class="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-ink">
+              {item.result}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between gap-4 p-6">
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-muted">{item.category}</p>
+              <h3 class="mt-1 text-lg">{item.name}</h3>
+            </div>
+            <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-ink transition-colors group-hover:border-accent group-hover:bg-accent group-hover:text-white">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

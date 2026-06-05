@@ -1,0 +1,28 @@
+---
+/**
+ * Logo — wordmark + abstract storefront mark. Reused in nav and footer.
+ * `tone` flips the wordmark color for dark (footer) vs light (nav) surfaces.
+ */
+import { site } from '../../lib/content';
+
+interface Props {
+  tone?: 'ink' | 'light';
+  class?: string;
+}
+const { tone = 'ink', class: className = '' } = Astro.props;
+const wordColor = tone === 'light' ? 'text-white' : 'text-ink';
+---
+
+<a href="/" class={`inline-flex items-center gap-2.5 ${className}`} aria-label={`${site.name} home`}>
+  <!-- Abstract storefront: tomato awning over a sky-blue base. -->
+  <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-ink">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 9l1.2-3.2A2 2 0 017.1 4.5h9.8a2 2 0 011.9 1.3L20 9" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <rect x="5" y="9" width="14" height="10" rx="1.5" stroke="var(--color-secondary)" stroke-width="2" />
+      <path d="M10 19v-4h4v4" stroke="var(--color-secondary)" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </span>
+  <span class={`font-display text-lg font-semibold tracking-tight ${wordColor}`}>
+    MainStreet<span class="text-accent">Lander</span>
+  </span>
+</a>

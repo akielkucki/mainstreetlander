@@ -1,0 +1,74 @@
+---
+/**
+ * Footer — dark ink surface. Contact, navigation, service area, social, legal.
+ */
+import Logo from '../ui/Logo.astro';
+import { site, navLinks, CONTACT_ANCHOR } from '../../lib/content';
+
+const year = new Date().getFullYear();
+const socials: { label: string; href: string }[] = [
+  { label: 'Instagram', href: site.social.instagram },
+  { label: 'Facebook', href: site.social.facebook },
+  { label: 'LinkedIn', href: site.social.linkedin },
+];
+---
+
+<footer class="bg-ink text-white/70">
+  <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8">
+    <div class="grid gap-10 md:grid-cols-12">
+      <!-- Brand + blurb -->
+      <div class="md:col-span-5">
+        <Logo tone="light" />
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
+          {site.tagline} Serving {site.serviceArea[0]} &amp; {site.serviceArea[1]}.
+        </p>
+        <a
+          href={CONTACT_ANCHOR}
+          class="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-deep"
+        >
+          Get Started
+        </a>
+      </div>
+
+      <!-- Explore -->
+      <nav class="md:col-span-3" aria-label="Footer">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-white/40">Explore</h2>
+        <ul class="mt-4 flex flex-col gap-2.5 text-sm">
+          {navLinks.map((link) => (
+            <li><a href={link.href} class="transition-colors hover:text-white">{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Contact -->
+      <div class="md:col-span-4">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-white/40">Get in touch</h2>
+        <ul class="mt-4 flex flex-col gap-2.5 text-sm">
+          <li><a href={`mailto:${site.email}`} class="transition-colors hover:text-white">{site.email}</a></li>
+          <li><a href={`tel:${site.phone.replace(/[^+\d]/g, '')}`} class="transition-colors hover:text-white">{site.phone}</a></li>
+          <li class="text-white/60">{site.serviceArea[0]}, PA · {site.serviceArea[1]}</li>
+        </ul>
+        <div class="mt-5 flex gap-3">
+          {socials.map((s) => (
+            <a
+              href={s.href}
+              class="rounded-full border border-white/15 px-3 py-1 text-xs transition-colors hover:border-white/40 hover:text-white"
+              rel="me noopener"
+              target="_blank"
+            >
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row">
+      <p>© {year} {site.legalName}. All rights reserved.</p>
+      <div class="flex gap-5">
+        <a href="/privacy" class="transition-colors hover:text-white">Privacy</a>
+        <a href="/terms" class="transition-colors hover:text-white">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>

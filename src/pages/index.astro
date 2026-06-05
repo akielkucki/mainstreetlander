@@ -1,0 +1,27 @@
+---
+/**
+ * Home — the MainStreetLander landing page. Sections are ordered as the funnel:
+ * hook → proof → how → price → what → work → objections → convert.
+ * Edit copy/data in src/lib/content.ts, not here.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import TrustStrip from '../components/sections/TrustStrip.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Services from '../components/sections/Services.astro';
+import Work from '../components/sections/Work.astro';
+import Faq from '../components/sections/Faq.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+---
+
+<BaseLayout>
+  <Hero />
+  <TrustStrip />
+  <HowItWorks />
+  <Pricing />
+  <Services />
+  <Work />
+  <Faq />
+  <FinalCta />
+</BaseLayout>

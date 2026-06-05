@@ -1,0 +1,104 @@
+---
+/**
+ * Hero — the showpiece. The H1 and subhead are static HTML (instant LCP, works
+ * with no JS). The staggered entrance is pure CSS (reduced-motion safe). Only
+ * the decorative parallax shapes are a hydrated island (HeroShapes).
+ */
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import HeroShapes from '../islands/HeroShapes.tsx';
+import { CONTACT_ANCHOR } from '../../lib/content';
+---
+
+<section class="relative overflow-hidden bg-bg">
+  <!-- Decorative animated shapes (aria-hidden island). -->
+  <HeroShapes client:load />
+
+  <div class="relative z-10 mx-auto grid max-w-7xl gap-12 px-5 pb-20 pt-16 sm:px-8 md:pb-28 md:pt-24 lg:grid-cols-12 lg:items-center">
+    <!-- Copy -->
+    <div class="lg:col-span-7">
+      <div class="hero-rise" style="--d:0ms">
+        <Badge>Doylestown &amp; Bucks County</Badge>
+      </div>
+
+      <h1 class="hero-rise mt-6 text-[clamp(2.6rem,7vw,5rem)] leading-[0.98]" style="--d:80ms">
+        Get your shop on
+        <span class="text-highlight text-accent">Main Street</span>
+        of the internet.
+      </h1>
+
+      <p class="hero-rise mt-6 max-w-xl text-lg text-muted sm:text-xl" style="--d:180ms">
+        We build local businesses a polished website — often in a day — then grow it
+        with SEO, Google Ads and ongoing care. Start sharp, scale when you’re ready.
+      </p>
+
+      <div class="hero-rise mt-8 flex flex-col gap-3 sm:flex-row sm:items-center" style="--d:260ms">
+        <Button href={CONTACT_ANCHOR} size="lg">Get Started</Button>
+        <Button href="#pricing" variant="secondary" size="lg">See Plans</Button>
+      </div>
+
+      <p class="hero-rise mt-6 text-sm text-muted" style="--d:340ms">
+        <span class="font-medium text-ink">Sites live in a day</span> · Starter from $297 · Cancel anytime
+      </p>
+    </div>
+
+    <!-- Abstract "this is what you get" site preview card. -->
+    <div class="hero-rise hidden lg:col-span-5 lg:block" style="--d:300ms" aria-hidden="true">
+      <div class="hero-float relative mx-auto w-full max-w-md rotate-2 rounded-2xl border border-border bg-bg shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)]">
+        <!-- Browser chrome -->
+        <div class="flex items-center gap-1.5 border-b border-border px-4 py-3">
+          <span class="h-2.5 w-2.5 rounded-full bg-accent/70"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-secondary/70"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-muted/40"></span>
+          <span class="ml-3 h-4 flex-1 rounded bg-bg-soft"></span>
+        </div>
+        <!-- Fake local-business landing -->
+        <div class="space-y-4 p-6">
+          <span class="inline-block rounded-full bg-secondary/20 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-secondary">Now open</span>
+          <div class="space-y-2">
+            <div class="h-5 w-3/4 rounded bg-ink/85"></div>
+            <div class="h-5 w-1/2 rounded bg-ink/85"></div>
+          </div>
+          <div class="space-y-1.5">
+            <div class="h-2.5 w-full rounded bg-border"></div>
+            <div class="h-2.5 w-5/6 rounded bg-border"></div>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="rounded-full bg-accent px-4 py-2 text-xs font-medium text-white">Book a table</span>
+            <span class="rounded-full border border-border px-4 py-2 text-xs text-ink">Menu</span>
+          </div>
+          <div class="mt-2 grid grid-cols-3 gap-2">
+            <div class="aspect-square rounded-lg bg-bg-soft"></div>
+            <div class="aspect-square rounded-lg bg-accent/15"></div>
+            <div class="aspect-square rounded-lg bg-secondary/20"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Staggered entrance — pure CSS so the LCP headline is real, paint-ready
+     HTML with no JS dependency. Disabled for reduced-motion users. */
+  @keyframes heroRise {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero-rise {
+    opacity: 0;
+    animation: heroRise 0.7s var(--ease-out-soft) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes heroFloat {
+    0%, 100% { transform: rotate(2deg) translateY(0); }
+    50%      { transform: rotate(2deg) translateY(-12px); }
+  }
+  .hero-float { animation: heroFloat 7s ease-in-out 0.8s infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-rise { opacity: 1; animation: none; }
+    .hero-float { animation: none; }
+  }
+</style>

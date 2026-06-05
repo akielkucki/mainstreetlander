@@ -1,0 +1,53 @@
+---
+/**
+ * Services — what's included beyond the build. Icons come from the inline SVG
+ * sprite below (referenced by `service.icon` from content.ts).
+ */
+import SectionHeading from '../ui/SectionHeading.astro';
+import { services } from '../../lib/content';
+---
+
+<!-- Icon sprite: define once, reference with <use href="#icon-…">. -->
+<svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></symbol>
+      <symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8" fill="currentColor"></circle></symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2"></rect><path d="M3.5 9.5h17M8 3v4M16 3v4M8 14h3"></path></symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></symbol>
+      <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 20v-5M13 20v-9M18 20v-6"></path></symbol>
+      <symbol id="icon-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"></path></symbol>
+    </g>
+  </defs>
+</svg>
+
+<section id="services" class="bg-bg py-20 md:py-28">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8">
+    <SectionHeading
+      eyebrow="What's included"
+      title="Everything you need to win local customers"
+      highlight="win local customers"
+    >
+      <p class="max-w-2xl text-lg text-muted">
+        A great site is the start. Growth plans bring the systems that actually
+        fill your calendar and your inbox.
+      </p>
+    </SectionHeading>
+
+    <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {services.map((service, i) => (
+        <div
+          data-reveal
+          style={`--reveal-delay:${(i % 3) * 90}ms`}
+          class="group rounded-3xl border border-border bg-bg p-6 transition-colors hover:border-ink/20"
+        >
+          <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary/15 text-secondary transition-colors group-hover:bg-accent/12 group-hover:text-accent">
+            <svg class="h-6 w-6"><use href={`#icon-${service.icon}`}></use></svg>
+          </span>
+          <h3 class="mt-5 text-lg">{service.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted">{service.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

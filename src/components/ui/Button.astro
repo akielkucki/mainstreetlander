@@ -1,0 +1,57 @@
+---
+/**
+ * Button — the one place button styling lives. Renders as <a> when `href` is
+ * given, otherwise <button>. Variants map to brand tokens (no hardcoded color).
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'md' | 'lg';
+  type?: 'button' | 'submit';
+  class?: string;
+  [key: string]: unknown; // pass through data-*, aria-*, etc.
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  type = 'button',
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const base =
+  'group relative inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight ' +
+  'transition-all duration-200 ease-[var(--ease-out-soft)] focus-visible:outline-2 ' +
+  'focus-visible:outline-offset-3 focus-visible:outline-accent disabled:opacity-60 disabled:pointer-events-none';
+
+const sizes = {
+  md: 'px-5 py-2.5 text-sm',
+  lg: 'px-7 py-3.5 text-base',
+};
+
+const variants = {
+  // Tomato — the primary "voice". Lifts and deepens on hover.
+  primary:
+    'bg-accent text-white shadow-[0_8px_24px_-8px_color-mix(in_srgb,var(--color-accent)_70%,transparent)] ' +
+    'hover:bg-accent-deep hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-10px_color-mix(in_srgb,var(--color-accent)_75%,transparent)] active:translate-y-0',
+  // Outlined ink — secondary action.
+  secondary:
+    'bg-bg text-ink border border-border hover:border-ink hover:-translate-y-0.5',
+  // Quiet text button.
+  ghost: 'text-ink hover:text-accent',
+};
+
+const cls = [base, sizes[size], variants[variant], className].join(' ');
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class={cls}
+  {...href ? { href } : { type }}
+  {...rest}
+>
+  <slot />
+</Tag>

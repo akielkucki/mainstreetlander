@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="MainStreetLander — websites for main-street businesses">
+  <!-- TODO: replace with a rendered 1200×630 og.png for best social previews. -->
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+  <circle cx="1040" cy="120" r="220" fill="#F55D3E" opacity="0.14"/>
+  <circle cx="150" cy="540" r="160" fill="#76BED0" opacity="0.18"/>
+  <rect x="980" y="430" width="90" height="90" rx="24" fill="#76BED0" opacity="0.5"/>
+  <g transform="translate(96,110)">
+    <rect x="0" y="0" width="64" height="64" rx="16" fill="#0F172A"/>
+    <path d="M14 28l3-8a5 5 0 0 1 4-3h22a5 5 0 0 1 4 3l3 8" fill="none" stroke="#F55D3E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="17" y="28" width="30" height="22" rx="3" fill="none" stroke="#76BED0" stroke-width="4"/>
+    <text x="84" y="42" font-family="'Clash Display','Space Grotesk',sans-serif" font-size="34" font-weight="600" fill="#0F172A">MainStreet<tspan fill="#F55D3E">Lander</tspan></text>
+  </g>
+  <text x="96" y="320" font-family="'Clash Display','Space Grotesk',sans-serif" font-size="86" font-weight="600" fill="#0F172A" letter-spacing="-2">Get your shop on</text>
+  <text x="96" y="412" font-family="'Clash Display','Space Grotesk',sans-serif" font-size="86" font-weight="600" letter-spacing="-2"><tspan fill="#F55D3E">Main Street</tspan><tspan fill="#0F172A"> of the internet.</tspan></text>
+  <text x="96" y="500" font-family="'Space Grotesk',sans-serif" font-size="32" fill="#878E88">Polished sites in a day · SEO &amp; Ads · Doylestown &amp; Bucks County</text>
+</svg>
