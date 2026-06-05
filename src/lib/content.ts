@@ -1,7 +1,7 @@
 /**
  * content.ts — single source of truth for all marketing copy & structured data.
  *
- * Edit pricing, FAQs, services, portfolio items, nav links and contact details
+ * Edit pricing, FAQs, projects, portfolio items, nav links and contact details
  * here; the `.astro` sections render from these arrays. A solo dev can change
  * the funnel without touching markup.
  */
@@ -193,43 +193,9 @@ export const services: Service[] = [
 /* -------------------------------------------------------------------------- */
 /* Work / portfolio                                                           */
 /* -------------------------------------------------------------------------- */
-
-export interface WorkItem {
-  /** TODO: replace placeholder projects with real client sites. */
-  name: string;
-  category: string;
-  result: string;
-  /** Two brand colors for the abstract placeholder thumbnail gradient. */
-  swatch: ['accent' | 'secondary' | 'ink', 'accent' | 'secondary' | 'ink'];
-  href?: string;
-}
-
-export const workItems: WorkItem[] = [
-  {
-    name: 'Doylestown Dental Co.',
-    category: 'Healthcare',
-    result: '+38% new-patient bookings',
-    swatch: ['secondary', 'accent'],
-  },
-  {
-    name: 'Ridge Line Roofing',
-    category: 'Home services',
-    result: 'Ranked #1 for “roofer near me”',
-    swatch: ['accent', 'ink'],
-  },
-  {
-    name: 'Maple & Main Café',
-    category: 'Hospitality',
-    result: 'Online ordering in a weekend',
-    swatch: ['ink', 'secondary'],
-  },
-  {
-    name: 'Bucks County Bikes',
-    category: 'Retail',
-    result: '2.1× quote requests',
-    swatch: ['accent', 'secondary'],
-  },
-];
+/* Projects now live in the `projects` content collection                     */
+/* (src/content/projects/*.md, schema in src/content.config.ts). The Work      */
+/* section and /projects/[slug] render from there.                            */
 
 /* -------------------------------------------------------------------------- */
 /* FAQ                                                                        */

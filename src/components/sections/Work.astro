@@ -1,68 +1,231 @@
 ---
 /**
- * Work — portfolio grid. Placeholder cards use abstract brand-color gradients
- * instead of imagery; real client screenshots slot straight into this shape
- * (add an `image` to WorkItem and swap the gradient div for <Image>).
- * TODO: replace placeholder projects with real client work.
+ * Work — "Selected work" index. Renders the `projects` content collection as a
+ * filterable table (Year · Name · Category · Industry), each row linking to its
+ * /projects/[slug] case study. Filtering is progressive enhancement: every
+ * project is real, crawlable HTML, and a tiny vanilla script hides non-matching
+ * rows when JS is on (no island/hydration needed).
+ *
+ * Layout follows the React reference (big title, glowing CTA orb, filter pills,
+ * hover preview) but uses this site's light brand tokens and components.
  */
-import SectionHeading from '../ui/SectionHeading.astro';
-import { workItems } from '../../lib/content';
+import { getCollection } from 'astro:content';
+import Badge from '../ui/Badge.astro';
+import { CONTACT_ANCHOR } from '../../lib/content';
 
-// Map swatch token names to CSS custom properties.
+// Map swatch token names to CSS custom properties for the placeholder gradient.
 const tokenVar: Record<string, string> = {
   accent: 'var(--color-accent)',
   secondary: 'var(--color-secondary)',
   ink: 'var(--color-ink)',
 };
+
+const projects = (await getCollection('projects'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+
+// Filter pills: "All" + only the disciplines actually present, in a fixed order.
+const ORDER = ['Web Design', 'E-commerce', 'Branding'] as const;
+const present = new Set(projects.map((p) => p.data.category));
+const filters = ['All', ...ORDER.filter((c) => present.has(c))];
 ---
 
-<section id="work" class="bg-bg-soft py-20 md:py-28">
+<section id="work" class="border-t border-border bg-bg-soft py-20 md:py-28">
   <div class="mx-auto max-w-7xl px-5 sm:px-8">
-    <SectionHeading eyebrow="Our work" title="Local businesses, leveled up" highlight="leveled up">
-      <p class="max-w-2xl text-lg text-muted">
-        A few of the main-street businesses we’ve put on the map — built to look
-        great and to bring in real bookings, calls and quotes.
-      </p>
-    </SectionHeading>
+    <!-- Header: section label + title, and the glowing "Book a call" orb. -->
+    <div class="flex items-start justify-between gap-6">
+      <div data-reveal>
+        <div class="flex items-center gap-3">
+          <Badge>Our work</Badge>
+          <span class="text-xs font-semibold tracking-[0.2em] text-muted">03</span>
+        </div>
+        <h2 class="mt-4 text-4xl sm:text-5xl md:text-6xl">
+          Selected <span class="text-accent">work</span>
+        </h2>
+        <p class="mt-4 max-w-xl text-lg text-muted">
+          A few main-street businesses we’ve put on the map — built to look great
+          and to bring in real bookings, calls and quotes.
+        </p>
+      </div>
 
-    <div class="mt-14 grid gap-6 sm:grid-cols-2">
-      {workItems.map((item, i) => (
-        <a
-          href={item.href ?? '#work'}
-          data-reveal
-          style={`--reveal-delay:${(i % 2) * 100}ms`}
-          class="group block overflow-hidden rounded-3xl border border-border bg-bg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-24px_rgba(15,23,42,0.3)]"
+      <!-- Glowing CTA orb -->
+      <a
+        href={CONTACT_ANCHOR}
+        data-reveal
+        aria-label="Book a call"
+        class="orb group relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full transition-transform duration-300 hover:scale-105 active:scale-95 sm:h-32 sm:w-32 md:h-40 md:w-40"
+      >
+        <span class="orb-glow absolute inset-0 rounded-full bg-accent/40 blur-2xl transition-all duration-500 group-hover:blur-3xl"></span>
+        <span class="absolute inset-0 rounded-full bg-gradient-to-br from-accent via-accent-deep to-secondary opacity-95"></span>
+        <span class="absolute inset-[6px] rounded-full bg-gradient-to-br from-white/35 via-transparent to-ink/10 backdrop-blur-[1px]"></span>
+        <span class="relative z-10 text-center text-[11px] font-semibold uppercase leading-tight tracking-wider text-white sm:text-xs md:text-sm">
+          Book<br />a call
+        </span>
+      </a>
+    </div>
+
+    <!-- Filter pills -->
+    <div data-reveal style="--reveal-delay:60ms" class="mt-10 flex flex-wrap gap-2">
+      {filters.map((f) => (
+        <button
+          type="button"
+          data-filter={f}
+          aria-pressed={f === 'All' ? 'true' : 'false'}
+          class="filter-pill cursor-pointer rounded-full border px-4 py-1.5 text-xs font-medium uppercase tracking-wider transition-all duration-300"
         >
-          <!-- Abstract gradient "screenshot" placeholder. -->
-          <div
-            class="relative aspect-[16/10] overflow-hidden"
-            style={`background:linear-gradient(135deg, ${tokenVar[item.swatch[0]]}, ${tokenVar[item.swatch[1]]})`}
-          >
-            <div class="absolute inset-0 bg-glow-secondary opacity-40 mix-blend-overlay"></div>
-            <!-- Mini browser bar to read as a website. -->
-            <div class="absolute left-4 top-4 flex gap-1.5">
-              <span class="h-2.5 w-2.5 rounded-full bg-white/70"></span>
-              <span class="h-2.5 w-2.5 rounded-full bg-white/50"></span>
-              <span class="h-2.5 w-2.5 rounded-full bg-white/40"></span>
-            </div>
-            <span class="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-ink">
-              {item.result}
-            </span>
-          </div>
-
-          <div class="flex items-center justify-between gap-4 p-6">
-            <div>
-              <p class="text-xs font-medium uppercase tracking-wider text-muted">{item.category}</p>
-              <h3 class="mt-1 text-lg">{item.name}</h3>
-            </div>
-            <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-ink transition-colors group-hover:border-accent group-hover:bg-accent group-hover:text-white">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-        </a>
+          {f}
+        </button>
       ))}
+    </div>
+
+    <!-- Table -->
+    <div class="mt-12">
+      <!-- Column headers (desktop) -->
+      <div class="hidden grid-cols-[80px_1fr_1fr_1fr_44px] gap-4 pb-4 text-xs font-medium uppercase tracking-wider text-muted md:grid">
+        <div>Year</div>
+        <div>Name</div>
+        <div>Category</div>
+        <div>Industry</div>
+        <div></div>
+      </div>
+      <div class="border-t border-border"></div>
+
+      <ul>
+        {projects.map((p, i) => (
+          <li
+            class="group relative border-b border-border"
+            data-category={p.data.category}
+            data-reveal
+            style={`--reveal-delay:${Math.min(i, 8) * 40}ms`}
+          >
+            <a
+              href={`/projects/${p.id}`}
+              class="grid grid-cols-1 items-center gap-1 py-6 md:grid-cols-[80px_1fr_1fr_1fr_44px] md:gap-4 md:py-7"
+            >
+              <span class="text-sm font-medium text-muted md:text-base">{p.data.year}</span>
+
+              <span class="text-lg font-medium text-ink transition-colors duration-300 group-hover:text-accent md:text-xl">
+                {p.data.title}
+              </span>
+
+              <span class="text-sm font-light text-muted md:text-base">{p.data.category}</span>
+              <span class="text-sm font-light text-muted md:text-base">{p.data.industry}</span>
+
+              <span class="hidden justify-self-end text-ink transition-colors md:flex">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border transition-colors duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-white">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </span>
+            </a>
+
+            {/* Hover preview — abstract "screenshot" (or real image), centered to the row's right. */}
+            <div class="pointer-events-none absolute inset-y-0 right-4 z-10 hidden items-center md:flex lg:right-16">
+              <div
+                class="preview-card w-[clamp(220px,24vw,340px)] overflow-hidden rounded-xl border border-border shadow-[0_30px_60px_-28px_rgba(15,23,42,0.5)]"
+                style={`--rot:${i % 2 === 0 ? '-3deg' : '3deg'}`}
+              >
+                {p.data.image ? (
+                  <img src={p.data.image} alt={`${p.data.title} website`} width="340" height="213" class="block aspect-[16/10] w-full object-cover" loading="lazy" />
+                ) : (
+                  <div
+                    class="relative aspect-[16/10]"
+                    style={`background:linear-gradient(135deg, ${tokenVar[p.data.swatch[0]]}, ${tokenVar[p.data.swatch[1]]})`}
+                  >
+                    <div class="absolute inset-0 bg-glow-secondary opacity-40 mix-blend-overlay"></div>
+                    <div class="absolute left-3 top-3 flex gap-1.5">
+                      <span class="h-2 w-2 rounded-full bg-white/70"></span>
+                      <span class="h-2 w-2 rounded-full bg-white/50"></span>
+                      <span class="h-2 w-2 rounded-full bg-white/40"></span>
+                    </div>
+                    <span class="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-medium text-ink">
+                      {p.data.result}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <p data-empty hidden class="py-16 text-center text-muted">No projects match this filter.</p>
     </div>
   </div>
 </section>
+
+<style>
+  /* Filter pills — state driven purely by aria-pressed, so the vanilla script
+     only has to flip that attribute. Works (and looks active on "All") with no JS. */
+  .filter-pill {
+    background: transparent;
+    color: var(--color-muted);
+    border-color: var(--color-border);
+  }
+  .filter-pill:hover {
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+  .filter-pill[aria-pressed='true'] {
+    background: var(--color-ink);
+    color: #fff;
+    border-color: var(--color-ink);
+  }
+
+  /* Hover preview card — settles up + fades in when its row is hovered. */
+  .preview-card {
+    opacity: 0;
+    transform: translateY(10px) rotate(var(--rot, 0deg));
+    transition:
+      opacity 0.3s var(--ease-out-soft),
+      transform 0.35s var(--ease-out-soft);
+  }
+  .group:hover .preview-card,
+  .group:focus-within .preview-card {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+
+  /* Gentle living glow on the CTA orb. */
+  @keyframes orbPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 0.8; transform: scale(1.08); }
+  }
+  .orb-glow {
+    animation: orbPulse 4.5s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .preview-card { transition: opacity 0.2s linear; transform: rotate(var(--rot, 0deg)); }
+    .orb-glow { animation: none; }
+  }
+</style>
+
+<script>
+  // Filter the table by discipline. Progressive enhancement: with JS off, every
+  // row stays visible and "All" reads as the active pill.
+  const root = document.getElementById('work');
+  if (root) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const rows = root.querySelectorAll<HTMLElement>('[data-category]');
+    const empty = root.querySelector<HTMLElement>('[data-empty]');
+
+    const apply = (filter: string) => {
+      let shown = 0;
+      rows.forEach((row) => {
+        const match = filter === 'All' || row.dataset.category === filter;
+        row.hidden = !match;
+        if (match) shown++;
+      });
+      buttons.forEach((b) =>
+        b.setAttribute('aria-pressed', String(b.dataset.filter === filter)),
+      );
+      if (empty) empty.hidden = shown !== 0;
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => apply(b.dataset.filter ?? 'All')),
+    );
+  }
+</script>

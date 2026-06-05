@@ -1,0 +1,224 @@
+---
+/**
+ * Project case study — /projects/[slug]. One page per `projects` collection
+ * entry: a hero (meta, title, result, services), the Markdown body, and a CTA
+ * with a link to the next project. Generated statically from getStaticPaths.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import { site, CONTACT_ANCHOR } from '../../lib/content';
+import { projectSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects'))
+    .filter((p) => !p.data.draft)
+    .sort((a, b) => a.data.order - b.data.order);
+
+  return projects.map((entry, i) => ({
+    params: { slug: entry.id },
+    // Wrap to the start so the last project still points somewhere.
+    props: { entry, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { entry, next } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+// Same swatch→token map the Work section uses for the abstract placeholder.
+const tokenVar: Record<string, string> = {
+  accent: 'var(--color-accent)',
+  secondary: 'var(--color-secondary)',
+  ink: 'var(--color-ink)',
+};
+const gradient = `linear-gradient(135deg, ${tokenVar[data.swatch[0]]}, ${tokenVar[data.swatch[1]]})`;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = JSON.stringify(projectSchema(data, canonical));
+---
+
+<BaseLayout
+  title={`${data.title} · Case Study — ${site.name}`}
+  description={data.summary}
+  image={data.image}
+>
+  <script type="application/ld+json" set:html={jsonLd} is:inline />
+
+  <article>
+    <!-- Hero -->
+    <section class="border-b border-border bg-bg-soft">
+      <div class="mx-auto max-w-5xl px-5 py-16 sm:px-8 md:py-20">
+        <a
+          href="/#work"
+          class="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-accent"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          All work
+        </a>
+
+        <div class="mt-6 flex flex-wrap items-center gap-2">
+          <Badge>{data.category}</Badge>
+          <Badge tone="ink">{data.industry}</Badge>
+          <span class="text-sm font-medium text-muted">{data.year}</span>
+        </div>
+
+        <h1 class="mt-5 text-[clamp(2.4rem,6vw,4.25rem)] leading-[1.02]">
+          {data.title}
+        </h1>
+
+        <p class="mt-5 max-w-2xl text-lg text-muted sm:text-xl">{data.summary}</p>
+
+        <div class="mt-7 flex flex-wrap items-center gap-3">
+          {data.url && (
+            <Button href={data.url} variant="secondary">
+              Visit live site
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </Button>
+          )}
+          <Button href={CONTACT_ANCHOR}>Start a project like this</Button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual + headline result -->
+    <section class="mx-auto max-w-5xl px-5 sm:px-8">
+      <div class="relative -mt-px overflow-hidden rounded-3xl border border-border shadow-[0_40px_90px_-50px_rgba(15,23,42,0.5)]">
+        {data.image ? (
+          <img src={data.image} alt={`${data.title} website`} class="block aspect-[16/9] w-full object-cover" width="1024" height="576" />
+        ) : (
+          <div class="relative aspect-[16/9]" style={`background:${gradient}`}>
+            <div class="absolute inset-0 bg-glow-secondary opacity-40 mix-blend-overlay"></div>
+            <!-- Browser chrome to read as a website -->
+            <div class="absolute left-5 top-5 flex gap-2">
+              <span class="h-3 w-3 rounded-full bg-white/70"></span>
+              <span class="h-3 w-3 rounded-full bg-white/50"></span>
+              <span class="h-3 w-3 rounded-full bg-white/40"></span>
+            </div>
+            <span class="absolute bottom-5 right-5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-ink">
+              {data.result}
+            </span>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Body + sidebar -->
+    <section class="mx-auto max-w-5xl px-5 py-16 sm:px-8 md:py-20">
+      <div class="grid gap-12 md:grid-cols-[1fr_18rem] md:gap-16">
+        <div class="project-body">
+          <Content />
+        </div>
+
+        <aside class="md:border-l md:border-border md:pl-10">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">Result</h2>
+          <p class="mt-2 text-2xl text-ink">{data.result}</p>
+
+          {data.services.length > 0 && (
+            <>
+              <h2 class="mt-8 text-xs font-semibold uppercase tracking-wider text-muted">What we did</h2>
+              <ul class="mt-3 flex flex-col gap-2.5">
+                {data.services.map((s) => (
+                  <li class="flex items-start gap-2.5 text-sm text-ink">
+                    <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          <div class="mt-8">
+            <Button href={CONTACT_ANCHOR} class="w-full">Get a site like this</Button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Next project -->
+    {next && next.id !== entry.id && (
+      <section class="border-t border-border bg-bg-soft">
+        <div class="mx-auto max-w-5xl px-5 py-14 sm:px-8">
+          <p class="text-xs font-semibold uppercase tracking-wider text-muted">Next project</p>
+          <a href={`/projects/${next.id}`} class="group mt-3 flex items-center justify-between gap-6">
+            <span class="text-2xl text-ink transition-colors group-hover:text-accent sm:text-3xl">
+              {next.data.title}
+            </span>
+            <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-ink transition-colors duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-white">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  /* Markdown body styling (no typography plugin in this project — scope it here). */
+  .project-body :global(h2) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .project-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .project-body :global(h3) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .project-body :global(p) {
+    color: var(--color-muted);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    margin-bottom: 1.15rem;
+  }
+  .project-body :global(strong) {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .project-body :global(ul) {
+    margin: 0 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .project-body :global(li) {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+  .project-body :global(li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-accent);
+  }
+  .project-body :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>

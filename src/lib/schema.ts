@@ -16,7 +16,7 @@ interface JsonLd {
 
 /**
  * ProfessionalService / Organization markup describing the agency, the areas
- * it serves and the services it offers.
+ * it serves and the projects it offers.
  */
 export function professionalServiceSchema(): JsonLd {
   return {
@@ -44,11 +44,42 @@ export function professionalServiceSchema(): JsonLd {
     sameAs: Object.values(site.social),
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Web services',
+      name: 'Web projects',
       itemListElement: services.map((s) => ({
         '@type': 'Offer',
         itemOffered: { '@type': 'Service', name: s.title, description: s.body },
       })),
+    },
+  };
+}
+
+/**
+ * CreativeWork markup for a single portfolio project / case study, crediting the
+ * agency as creator. Emitted on each /projects/[slug] page.
+ */
+export function projectSchema(
+  project: {
+    title: string;
+    summary: string;
+    industry: string;
+    year: string;
+    image?: string;
+  },
+  url: string
+): JsonLd {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.summary,
+    about: project.industry,
+    dateCreated: project.year,
+    url,
+    ...(project.image ? { image: new URL(project.image, site.url).href } : {}),
+    creator: {
+      '@type': 'Organization',
+      name: site.name,
+      url: site.url,
     },
   };
 }

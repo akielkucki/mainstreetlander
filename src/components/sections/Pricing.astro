@@ -64,6 +64,7 @@ import { pricingTiers, CONTACT_ANCHOR } from '../../lib/content';
           <a
             href={CONTACT_ANCHOR}
             data-plan={tier.id}
+            data-pricing-button
             class={`mt-7 inline-flex items-center justify-center rounded-full px-6 py-3 font-medium transition-all duration-200 hover:-translate-y-0.5 ${
               tier.featured
                 ? 'bg-accent text-white hover:bg-accent-deep'
@@ -87,3 +88,49 @@ import { pricingTiers, CONTACT_ANCHOR } from '../../lib/content';
     </p>
   </div>
 </section>
+
+<script>
+  const pricingButtons = document.querySelectorAll<HTMLAnchorElement>('[data-pricing-button]');
+
+  pricingButtons.forEach((button) => {
+    button.addEventListener('click', handlePricingSelection);
+  });
+
+  async function handlePricingSelection(event: MouseEvent): Promise<void> {
+    event.preventDefault();
+
+    const anchor = event.currentTarget as HTMLAnchorElement;
+    if (anchor.hasAttribute('data-loading')) return;
+
+    const plan = anchor.getAttribute('data-plan') || '';
+    const originalText = anchor.innerText;
+    const originalClasses = anchor.className;
+    const targetId = anchor.href?.split('#')[1] || '';
+
+    anchor.setAttribute('data-loading', 'true');
+    anchor.innerText = 'Selected';
+    anchor.classList.add('bg-accent', 'text-white', 'hover:bg-accent-deep');
+
+    await new Promise((resolve) => setTimeout(resolve, 575));
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('plan', plan);
+    window.history.pushState({}, '', url.toString());
+
+    if (targetId) {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    anchor.innerText = originalText;
+    anchor.className = originalClasses;
+    anchor.removeAttribute('data-loading');
+  }
+</script>
+
+<style>
+  [data-loading] {
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+  }
+</style>
