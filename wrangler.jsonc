@@ -3,7 +3,7 @@
   "compatibility_date": "2026-06-06",
   "main": "dist/server/entry.mjs",
   "assets": {
-    "directory": "./dist/client"
+    "directory": "./dist"
   },
   "kv_namespaces": [
     {
@@ -11,10 +11,4 @@
       "id": "fd9182afaf5049a1bc4b09ac9d494dec"
     }
   ],
-  {
-    "compatibility_date": "2026-06-06",
-    "assets": {
-      "directory": "./dist"
-    }
-  }
 }
