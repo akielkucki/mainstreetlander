@@ -1,43 +1,64 @@
-# Astro Starter Kit: Minimal
+# Mainstreet Lander
 
-```sh
-npm create astro@latest -- --template minimal
+A landing-page web project built with **Astro 6**, **Preact**, and **Tailwind CSS**. It demonstrates my work with modern website architecture, component-based development, and a lightweight frontend stack.
+
+## Tech stack
+
+- **Astro 6** — website framework and build system
+- **Preact** — interactive UI components
+- **TypeScript configuration** — typed development tooling
+- **Tailwind CSS 4** — styling
+- **Nanostores** and **@nanostores/preact** — state-management tooling
+- **Motion** — animation library
+
+## What this project demonstrates
+
+- Developing websites with Astro's component and page structure
+- Integrating Preact into an Astro project
+- Setting up reusable frontend tooling for styling and interaction
+- Working with a modern build pipeline and production-ready build scripts
+
+## Getting started
+
+### Prerequisites
+
+- **Node.js 22.12 or newer**
+- npm
+
+### Install and run
+
+```bash
+git clone https://github.com/akielkucki/mainstreetlander.git
+cd mainstreetlander
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Open the local URL printed by Astro (typically `http://localhost:4321`).
 
-## 🚀 Project Structure
+## Available commands
 
-Inside of your Astro project, you'll see the following folders and files:
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Astro development server |
+| `npm run build` | Generate the production build |
+| `npm run preview` | Preview the production build locally |
+| `npm run astro` | Run the Astro CLI |
+
+## Repository structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+public/             Public/static assets
+src/                Site source code
+astro.config.mjs    Astro configuration
+.env.example        Example environment configuration
+package.json        Dependencies and scripts
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Project status
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Portfolio / development project. The libraries above are listed in the project's dependencies; their presence alone does not guarantee that every possible integration is used in the current implementation.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Author
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+**Alex** — [GitHub](https://github.com/akielkucki)
